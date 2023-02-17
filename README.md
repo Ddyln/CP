@@ -1,0 +1,1 @@
+Some of the stuff that i wrote in highschool that i didn't accidentally delete.
