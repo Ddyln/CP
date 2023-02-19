@@ -9,10 +9,6 @@ using namespace std;
 #define se second
 #define endl '\n'
 
-void sol() {
-	
-}
-
 signed main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -24,7 +20,7 @@ signed main() {
 	// int _nt; cin >> _nt;
 	int _nt = 1;
 	while (_nt--) {
-		sol();
+		// Code here
 	}
 	
 	return 0;
