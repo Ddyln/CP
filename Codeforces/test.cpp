@@ -1,54 +1,18 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-#define Fname ((string) "test")
+// LUOGU_RID: 100427224
+#include<bits/stdc++.h>
 #define int long long
-#define ii pair <int, int>
-#define iii pair <int, ii>
-#define fi first
-#define se second
-#define endl '\n'
-
-bool kt(int mask, int i) {
-	return !(mask & (1 << i));
-}
-
-void print(int n, int step = 0) {
-	if (n == 0)
-		return;
-	print(n / 2, step + 1);
-	cout << n % 2;
-	if (!step)
-		cout << endl;
-}
-
-void sol() {
-	int cnt = 0, n = 0;
-	cin >> n;
-	for (int i = 0; i < (1 << n); i++) {
-		bool ok = __builtin_popcount(i) % 2;
-		cnt += ok;
-	}
-	cout << cnt;
-}
-
-signed main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	#ifdef lan_ngu
-		// freopen((Fname + ".inp").c_str(), "r", stdin);
-		// freopen((Fname + ".out").c_str(), "w", stdout);
-	#endif
-
-	// int _nt; cin >> _nt;
-	int _nt = 1;
-	while (_nt--) {
-		// sol();
-		map <int, int> mp;
-		mp.insert({1, 2});
-		for (auto x : mp)
-			cout << x.fi << ' ';
-	}
-	
+using namespace std;
+int n,a[320],f[320][180020];
+const int p=998244353;
+signed main(){
+	freopen("test.inp", "r", stdin);
+	freopen("test.ans", "w", stdout);
+	cin>>n;
+	for(int i=1;i<=n;i++) cin>>a[i];
+	for(int i=-90000;i<=90000;i++) f[n][i]=1;
+	for(int i=n-1;i>1;i--)
+		for(int j=-90000;j<=90000;j++)
+			f[i][j]=(f[i+1][a[i+1]+j]+(j!=0)*f[i+1][a[i+1]-j])%p;
+	cout<<f[2][a[2]]<<endl;
 	return 0;
 }
