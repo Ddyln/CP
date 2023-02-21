@@ -2,15 +2,26 @@
 using namespace std;
 
 #define Fname ((string) "test")
-const int _nt = 100;
+const int _nt = 500;
 #define endl '\n'
 
 void createTest(int id) {
     ofstream cout((Fname + ".inp").c_str());
-    int n = 300, val = 301;
-    cout << n << endl;
+    int n = 50, q = 100, val = 1e9;
+    cout << 1 << endl << n << ' ' << q << endl;
     for (int i = 1; i <= n; i++)
-        cout << rand() % val << ' ';
+        cout << (rand() % val) * (rand() % val) + 1 << ' ';
+    while (q--) {
+        int t = rand() % 2 + 1;
+        cout << t << ' ';
+        if (t == 1) {
+            int l = rand() % n + 1;
+            int r = rand() % (n - l + 1) + l;
+            cout << l << ' ' << r << endl;
+        }
+        else
+            cout << rand() % n + 1 << endl;
+    }
     cout.close();
 }
 

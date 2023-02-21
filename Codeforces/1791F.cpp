@@ -59,6 +59,7 @@ signed main() {
         cin >> n >> q;
         for (int i = 1; i <= n; i++)
             cin >> a[i];
+        memset(bit, 0, sizeof(bit));
         while (q--) {
             int t = 1;
             cin >> t;
