@@ -10,7 +10,7 @@ using namespace std;
 #define endl '\n'
 const int N = 2e5 + 5;
 
-int n, m, res, a[N], suf[N], st[4 * N], ok = 0;
+int n, m, res, a[N], suf[N], st[4 * N];
 vector <int> v;
 map <int, int> id, cnt;
 
