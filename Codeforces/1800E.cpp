@@ -10,15 +10,15 @@ using namespace std;
 #define endl '\n'
 const int N = 2e5 + 5;
 
-int n, k, cnt[2][N][26], m, id[N];
-string s, t;
+int n, k, m, id[N];
+string s, t, tmp[2][N];
 queue <int> q;
 
 void bfs(int u) {
     q.push(u);
+    id[u] = m;
     while (q.size()) {
         u = q.front();
-        id[u] = m;
         q.pop();
         if (u + k <= n && !id[u + k]) {
             id[u + k] = m;
@@ -53,24 +53,30 @@ signed main() {
 		// Code here
         cin >> n >> k >> s >> t;
         m = 0;
-        memset(id, 0, sizeof(id));
-        memset(cnt, 0, sizeof(cnt));
+        for (int i = 1; i <= n; i++)
+            id[i] = 0;
         for (int i = 1; i <= n; i++)
             if (!id[i]) {
                 m++;
                 bfs(i);
             }
         for (int i = 1; i <= n; i++) {
-            cnt[0][id[i]][s[i - 1] - 'a']++;
-            cnt[1][id[i]][t[i - 1] - 'a']++;
+            tmp[0][id[i]] += (s[i - 1]);
+            tmp[1][id[i]] += (t[i - 1]);
         }
         bool ok = 1;
         for (int i = 1; i <= m; i++) {
-            for (int j = 0; j < 26; j++)
-                if (cnt[0][i][j] != cnt[1][i][j])
-                    ok = 0;
+            sort(tmp[0][i].begin(), tmp[0][i].end());
+            sort(tmp[1][i].begin(), tmp[1][i].end());
+            if (tmp[0][i] != tmp[1][i])
+                ok = 0;
         }
         cout << (ok ? "YES\n" : "NO\n");
+        if (_nt)
+            for (int i = 1; i <= m; i++) {
+                tmp[0][i].clear();
+                tmp[1][i].clear();
+            }
 	}
 	
 	return 0;

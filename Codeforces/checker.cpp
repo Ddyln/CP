@@ -7,10 +7,18 @@ const int _nt = 20000;
 
 void createTest(int id) {
     ofstream cout((Fname + ".inp").c_str());
-    int n = 1000, val = 1e3;
-    cout << 1 << endl << n << ' ' << (rand() % val + 1) * (rand() % val + 1) * (rand() % val + 1) << endl;
-    for (int i = 0; i < n; i++)
-        cout << (rand() % val + 1) * (rand() % val + 1) + (rand() % val + 1) << ' ';
+    int n = 500;
+    cout << n << endl;
+    for (int i = 1; i <= n; i++) {
+        int len = rand() % 40 + 30, ban = rand() % 26;
+        for (int j = 0; j < len; j++) {
+            int tmp = rand() % 26;
+            if (tmp == ban)
+                continue;
+            cout << char(tmp + (int)'a');
+        }
+        cout << endl;
+    }
     cout.close();
 }
 
