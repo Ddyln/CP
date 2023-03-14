@@ -2,7 +2,7 @@
 using namespace std;
 
 #define Fname ((string) "test")
-#define int long long
+// #define int long long
 #define ii pair <int, int>
 #define iii pair <int, ii>
 #define fi first
@@ -14,7 +14,7 @@ const int MASK = (1 << 26) - 1;
 int n, a[N], tmp[26];
 long long res = 0;
 map <int, int> cnt;
-set <int> v[26];
+vector <int> v[26];
 
 int Get(int miss, int n) {
     return (((~n) & MASK) ^ (1 << miss));
@@ -41,22 +41,18 @@ signed main() {
                 a[i] ^= (1 << (c - 'a'));
                 tmp[c - 'a']++;
             }
-            cnt[a[i]]++;
             for (int j = 0; j < 26; j++)
                 if (tmp[j] == 0)
-                    v[j].insert(a[i]);
+                    v[j].push_back(a[i]);
         }
         for (int i = 0; i < 26; i++) {
+            cnt.clear();
             for (int x : v[i]) {
-                int other = Get(i, x);
-                auto it = v[i].lower_bound(other);
-                if (it != v[i].end() && *it == other) {
-                    // cerr << x << ' ' << other << endl;
-                    res += 1LL * cnt[other] * cnt[x];
-                }
+                res += 1LL * cnt[Get(i, x)];
+                cnt[x]++;
             }
         }
-        cout << res / 2;
+        cout << res;
 	}
 	
 	return 0;
