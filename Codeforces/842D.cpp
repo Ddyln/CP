@@ -87,13 +87,7 @@ signed main() {
             x ^= a;
             T.addNum(a);
         }
-        while (q--) {
-            int tmp; cin >> tmp;
-            x ^= tmp;
-            if (!T.findNum(x))
-                T.addNum(x);
-            cout << T.query() << endl;
-        }
+        
 	}
 	
 	return 0;
