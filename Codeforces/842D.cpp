@@ -87,7 +87,9 @@ signed main() {
             x ^= a;
             T.addNum(a);
         }
-        
+        while (q--) {
+            
+        }
 	}
 	
 	return 0;
