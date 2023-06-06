@@ -49,18 +49,19 @@ struct Trie {
         return 1;
     }
 
-    int query() {
+    int findMex(int x) {
         Node* p = root->child[0];
         int res = 0;
         for (int i = 30; i >= 0; i--) {
-            if (p->child[0] == NULL)
-                p->child[0] = GetNode();
-            if (p->child[0]->cnt < (1 << i))
-                p = p->child[0];
+            int l = 0 ^ ((x >> i) & 1);
+            if (p->child[l] == NULL)
+                p->child[l] = GetNode();
+            if (p->child[l]->cnt < (1 << i))
+                p = p->child[l];
             else {
-                if (p->child[1] == NULL)
-                    p->child[1] = GetNode();
-                p = p->child[1], res += (1 << i);
+                if (p->child[l ^ 1] == NULL)
+                    p->child[l ^ 1] = GetNode();
+                p = p->child[l ^ 1], res += (1 << i);
             }
         }
         return res;
@@ -79,16 +80,18 @@ signed main() {
 	int _nt = 1;
 	while (_nt--) {
 		// Code here
-        int n, q, x = 0;
+        int n, q, x = 0, tmp;
         cin >> n >> q;
         Trie T{};
         for (int i = 1; i <= n; i++) {
             int a; cin >> a;
-            x ^= a;
-            T.addNum(a);
+            if (!T.findNum(a))
+                T.addNum(a);
         }
         while (q--) {
-            
+            cin >> tmp;
+            x ^= tmp;
+            cout << T.findMex(x) << endl;
         }
 	}
 	
