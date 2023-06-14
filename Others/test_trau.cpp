@@ -1,20 +1,35 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
-long long a,b,c,d,k;
-int main(){
-    freopen("test.inp", "r", stdin);
-	freopen("test.ans", "w", stdout);
-cin>>a>>b>>c>>d>>k;
-int r=(b+d)%k;
-int res=(b+d)-r;
-if(res<=0) cout<<-1;
-else{
-    for(int i=b;i>=a;i--){
-       int u= res-i;
-       if (u <c || u>d) continue;
-            cout<<i<<" "<<u;
-        return 0;
-    }
-    cout<<-1;
+
+#define int long long
+const int N = 1e6 + 5;
+const int MOD = 1e9 + 7;
+
+int n, a[N], f[N], p2[N], pSum[N];
+
+int GetSum(int i, int j) {
+    return pSum[j] - pSum[i - 1];
 }
+
+signed main() {
+    ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	freopen("test.inp", "r", stdin);
+	freopen("test.ans", "w", stdout);
+	cin >> n;
+	p2[0] = 1;
+    pSum[0] = 0;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+		p2[i] = p2[i - 1] * 2 % MOD;
+        pSum[i] = pSum[i - 1] + a[i];
+	}
+
+    f[0] = 0;
+    for (int i = 1; i <= n; i++) {
+        for (int j = i; j > 0; j--)
+            f[i] += f[j - 1] + GetSum(j, i) * (i - j + 1) * p2[max(0LL, j - 2)];
+    }
+    cout << f[n];
+    return 0;
 }
