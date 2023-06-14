@@ -10,8 +10,10 @@ int n, a[N], p2[N], s1 = 0, s2 = 0, s3 = 0, s4 = 0, f_n = 0, pf = 0;
 signed main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
-	freopen("test.inp", "r", stdin);
-	freopen("test.out", "w", stdout);
+	#ifdef lan_ngu
+		freopen("test.inp", "r", stdin);
+		freopen("test.out", "w", stdout);
+	#endif
 	cin >> n;
 	p2[0] = 1;
 	for (int i = 1; i <= n; i++) {

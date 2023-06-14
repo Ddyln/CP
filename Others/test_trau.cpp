@@ -8,27 +8,29 @@ const int MOD = 1e9 + 7;
 int n, a[N], f[N], p2[N], pSum[N];
 
 int GetSum(int i, int j) {
-    return pSum[j] - pSum[i - 1];
+    return (pSum[j] - pSum[i - 1] + MOD) % MOD;
 }
 
 signed main() {
     ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
-	freopen("test.inp", "r", stdin);
-	freopen("test.ans", "w", stdout);
+	#ifdef lan_ngu
+		freopen("test.inp", "r", stdin);
+		freopen("test.ans", "w", stdout);   
+	#endif
 	cin >> n;
 	p2[0] = 1;
     pSum[0] = 0;
 	for (int i = 1; i <= n; i++) {
 		cin >> a[i];
 		p2[i] = p2[i - 1] * 2 % MOD;
-        pSum[i] = pSum[i - 1] + a[i];
+        pSum[i] = (pSum[i - 1] + a[i]) % MOD;
 	}
 
     f[0] = 0;
     for (int i = 1; i <= n; i++) {
         for (int j = i; j > 0; j--)
-            f[i] += f[j - 1] + GetSum(j, i) * (i - j + 1) * p2[max(0LL, j - 2)];
+            (f[i] += f[j - 1] + GetSum(j, i) * (i - j + 1) % MOD * p2[max(0LL, j - 2)] % MOD) %= MOD;
     }
     cout << f[n];
     return 0;
