@@ -2,15 +2,12 @@
 using namespace std;
 
 #define Fname ((string) "test")
-const int _nt = 2;
+const int _nt = 1;
 #define endl '\n'
 
 void createTest(int id) {
 	ofstream cout((Fname + ".inp").c_str());
-	int n = rand() % 1000 + 1, M = 1e9;
-	cout << n << endl;
-	for (int i = 1; i <= n; i++)
-		cout << rand() % M + 1 << ' ';
+	
 	cout.close();
 }
 
