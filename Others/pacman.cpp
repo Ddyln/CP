@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define int long long
 const int MOD = 1e9 + 7;
 const int N = 25;
 int n, m, b[N], s[N], res = 0;
