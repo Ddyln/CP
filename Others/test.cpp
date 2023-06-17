@@ -5,12 +5,12 @@ int cnp(int l, int r, int password, int k) {
 	if (l >= r)
 		return 0;
 	if (k == 1)
-		return (p - l + 1) * (p + l) / 2;
+		return (password - l + 1) * (password + l) / 2;
 	int m = (l + r) / 2;
 	if (m == password)
-		return 0;
+		return m;
 	if (m < password)
-		return cnp(m + 1, r, password, k);
+		return m + cnp(m + 1, r, password, k);
 	return m + cnp(l, m - 1, password, k - 1);
 }
 
