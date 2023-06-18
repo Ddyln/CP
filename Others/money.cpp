@@ -2,7 +2,7 @@
 using namespace std;
 
 #define int long long
-int m, a[] = {0, 1, 2, 3, 5, 10, 50, 100, 200, 500}, f[14][1000] = {0};
+int m, a[] = {0, 1, 2, 5, 10, 20, 50, 100, 200, 500}, f[14][1000] = {0};
 signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -17,6 +17,7 @@ signed main() {
         return 0;
     }
     m /= 1000;
+    memset(f, 0, sizeof f);
     for (int i = 0; i <= 10; i++)
         f[i][0] = 1;
     for (int i = 1; i <= 9; i++)
