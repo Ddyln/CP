@@ -56,7 +56,12 @@ signed main() {
             else {
                 while (i < a.size() && a[i] != b[j])
                     st.push(a[i]), in[a[i]] = 1, i++;
-                i++, j++;
+                if (i < a.size() && a[i] == b[j])
+                    i++, j++;
+                else {
+                    cout << "NO";
+                    return 0;
+                }
             }
         }
         else

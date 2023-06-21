@@ -12,7 +12,7 @@ void Try(int i, int beauty, int strength) {
     else {
         Try(i + 1, beauty, strength);
         if (strength >= s[i])
-            Try(i + 1, (beauty + b[i]) % MOD, strength - s[i]);
+            Try(i + 1, beauty + b[i], strength - s[i]);
     }
 }
 
@@ -27,6 +27,6 @@ signed main() {
     for (int i = 0; i < n; i++)
         cin >> s[i] >> b[i];
     Try(0, 0, m);
-    cout << res;
+    cout << res % MOD;
     return 0;
 }
