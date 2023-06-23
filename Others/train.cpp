@@ -2,7 +2,6 @@
 using namespace std;
 
 vector <int> a, b;
-map <int, int> in;
 
 signed main() {
     ios_base::sync_with_stdio(false);
@@ -35,7 +34,7 @@ signed main() {
     }
     int i = 0, j = 0;
     stack <int> st;
-    while (i < a.size() || j < b.size()) {
+    while (j < b.size()) {
         if (i >= a.size()) {
             if (!st.size() || st.top() != b[j]) {
                 cout << "NO";
@@ -45,24 +44,12 @@ signed main() {
             j++;
         }
         else if (a[i] != b[j]) {
-            if (in[b[j]]) {
-                if (!st.size() || st.top() != b[j]) {
-                    cout << "NO";
-                    return 0;
-                }
-                else
-                    j++, st.pop();
-            }
-            else {
-                while (i < a.size() && a[i] != b[j])
-                    st.push(a[i]), in[a[i]] = 1, i++;
-                if (i < a.size() && a[i] == b[j])
-                    i++, j++;
-                else {
-                    cout << "NO";
-                    return 0;
-                }
-            }
+            if (st.size() && st.top() == b[j]) {
+				st.pop();
+				j++;
+			}
+            else
+        		st.push(a[i++]);
         }
         else
             i++, j++;
