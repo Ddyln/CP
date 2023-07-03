@@ -2,22 +2,22 @@
 using namespace std;
 
 #define Fname ((string) "test")
-#define int long long
+#define ll long long
 #define ii pair <int, int>
 #define iii pair <int, ii>
 #define fi first
 #define se second
 #define endl '\n'
-const int MAX = 1e17;
+const ll MAX = 1e17;
 
 int n;
 string s, t;
 vector <string> ans;
 vector <char> st;
-map <pair <vector <char>, int>, int> mp1, mp2;
+map <pair <vector <char>, int>, ll> mp1, mp2;
 map <pair <vector <char>, int>, bool> vis;
 
-void add(int &a, int &b, const int &c, const int &d) {
+void add(ll &a, ll &b, const ll &c, const ll &d) {
     a += c;
     b += d;
     if (a >= MAX)
