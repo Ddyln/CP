@@ -13,9 +13,9 @@ const int MAX = 1e17;
 int n;
 string s, t;
 vector <string> ans;
-stack <char> st;
-map <pair <stack <char>, ii>, int> mp1, mp2;
-map <pair <stack <char>, ii>, bool> vis;
+vector <char> st;
+map <pair <vector <char>, int>, int> mp1, mp2;
+map <pair <vector <char>, int>, bool> vis;
 
 void add(int &a, int &b, const int &c, const int &d) {
     a += c;
@@ -24,29 +24,38 @@ void add(int &a, int &b, const int &c, const int &d) {
         a -= MAX, b++;
 }
 
-void Try(int i, int j) {
-    vis[{st, {i, j}}] = 1;
-    if (j == n) {
-        mp1[{st, {i, j}}] = 1;
+bool check(int i, int j) {
+    vector <char> tmp = st;
+    while (j < n) {
+        if (tmp.size() && tmp.back() == t[j])
+            tmp.pop_back();
+        j++;
     }
-    else {
+    return tmp.empty();
+}
+
+void Try(int i, int j) {
+    vis[{st, j}] = 1;
+    if (!check(i, j))
+        return;
+    if (j < n) {
         if (i < n) {
-            st.push(s[i]);
-            if (!vis[{st, {i + 1, j}}])
+            st.push_back(s[i]);
+            if (!vis[{st, j}])
                 Try(i + 1, j);
-            stack <char> tmp = st;
-            tmp.pop();
-            add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i + 1, j}}], mp2[{st, {i + 1, j}}]);
-            st.pop();
+            vector <char> tmp = st;
+            tmp.pop_back();
+            add(mp1[{tmp, j}], mp2[{tmp, j}], mp1[{st, j}], mp2[{st, j}]);
+            st.pop_back();
         }
-        if (st.size() && st.top() == t[j]) {
-            st.pop();
-            if (!vis[{st, {i, j + 1}}])
+        if (st.size() && st.back() == t[j]) {
+            st.pop_back();
+            if (!vis[{st, j + 1}])
                 Try(i, j + 1);
-            stack <char> tmp = st;
-            tmp.push(t[j]);
-            add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i, j + 1}}], mp2[{st, {i, j + 1}}]);
-            st.push(t[j]);
+            vector <char> tmp = st;
+            tmp.push_back(t[j]);
+            add(mp1[{tmp, j}], mp2[{tmp, j}], mp1[{st, j + 1}], mp2[{st, j + 1}]);
+            st.push_back(t[j]);
         }
     }
 }
@@ -57,14 +66,14 @@ void Find(int i, int j, string command) {
     }
     else {
         if (i < n) {
-            st.push(s[i]);
+            st.push_back(s[i]);
             Find(i + 1, j, command + "1");
-            st.pop();
+            st.pop_back();
         }
-        if (st.size() && st.top() == t[j]) {
-            st.pop();
+        if (st.size() && st.back() == t[j]) {
+            st.pop_back();
             Find(i, j + 1, command + "2");
-            st.push(t[j]);
+            st.push_back(t[j]);
         }
     }
 }
@@ -81,11 +90,16 @@ signed main() {
 	while (_nt--) {
         cin >> s >> t;
         n = s.size();
+        mp1[{st, n}] = 1;
         Try(0, 0);
-        if (mp2[{st, {0, 0}}])
-            cout << mp2[{st, {0, 0}}];
-        cout << mp1[{st, {0, 0}}];
-        if (!mp2[{st, {0, 0}}] && mp1[{st, {0, 0}}] <= 1000) {
+        if (mp2[{st, 0}]) {
+            cout << mp2[{st, 0}];
+            int n = 17 - to_string(mp1[{st, 0}]).size();
+            while (n--)
+                cout << "0";
+        }
+        cout << mp1[{st, 0}];
+        if (!mp2[{st, 0}] && mp1[{st, 0}] <= 1000) {
             Find(0, 0, "");
             for (int i = 0; i < ans.size(); i++)
                 cout << endl << ans[i];
