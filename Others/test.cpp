@@ -13,9 +13,9 @@ const int MAX = 1e17;
 int n;
 string s, t;
 vector <string> ans;
-vector <char> st;
-map <pair <vector <char>, ii>, int> mp1, mp2;
-map <pair <vector <char>, ii>, bool> vis;
+stack <char> st;
+map <pair <stack <char>, ii>, int> mp1, mp2;
+map <pair <stack <char>, ii>, bool> vis;
 
 void add(int &a, int &b, const int &c, const int &d) {
     a += c;
@@ -24,57 +24,26 @@ void add(int &a, int &b, const int &c, const int &d) {
         a -= MAX, b++;
 }
 
-bool check(int i, int j) {
-    bool ok = 1;
-    vector <char> tmp = st;
-    while (j < n) {
-        if (i >= n) {
-            if (!st.size() || st.back() != t[j]) {
-                ok = 0;
-                break;
-            }
-            st.pop_back();
-            j++;
-        }
-        else if (s[i] != t[j]) {
-            if (st.size() && st.back() == t[j]) {
-				st.pop_back();
-				j++;
-			}
-            else
-        		st.push_back(s[i++]);
-        }
-        else
-            i++, j++;
-    }
-    st = tmp;
-    return ok;
-}
-
 void Try(int i, int j) {
     vis[{st, {i, j}}] = 1;
     if (j < n) {
         if (i < n) {
-            st.push_back(s[i]);
-            if (check(i + 1, j)) {
-                if (!vis[{st, {i + 1, j}}])
-                    Try(i + 1, j);
-                vector <char> tmp = st;
-                tmp.pop_back();
-                add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i + 1, j}}], mp2[{st, {i + 1, j}}]);
-            }
-            st.pop_back();
+            st.push(s[i]);
+            if (!vis[{st, {i + 1, j}}])
+                Try(i + 1, j);
+            stack <char> tmp = st;
+            tmp.pop();
+            add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i + 1, j}}], mp2[{st, {i + 1, j}}]);
+            st.pop();
         }
-        if (st.size() && st.back() == t[j]) {
-            st.pop_back();
-            if (check(i, j + 1)) {
-                if (!vis[{st, {i, j + 1}}])
-                    Try(i, j + 1);
-                vector <char> tmp = st;
-                tmp.push_back(t[j]);
-                add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i, j + 1}}], mp2[{st, {i, j + 1}}]);
-            }
-            st.push_back(t[j]);
+        if (st.size() && st.top() == t[j]) {
+            st.pop();
+            if (!vis[{st, {i, j + 1}}])
+                Try(i, j + 1);
+            stack <char> tmp = st;
+            tmp.push(t[j]);
+            add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i, j + 1}}], mp2[{st, {i, j + 1}}]);
+            st.push(t[j]);
         }
     }
 }
@@ -85,14 +54,14 @@ void Find(int i, int j, string command) {
     }
     else {
         if (i < n) {
-            st.push_back(s[i]);
+            st.push(s[i]);
             Find(i + 1, j, command + "1");
-            st.pop_back();
+            st.pop();
         }
-        if (st.size() && st.back() == t[j]) {
-            st.pop_back();
+        if (st.size() && st.top() == t[j]) {
+            st.pop();
             Find(i, j + 1, command + "2");
-            st.push_back(t[j]);
+            st.push(t[j]);
         }
     }
 }
