@@ -8,62 +8,33 @@ using namespace std;
 #define fi first
 #define se second
 #define endl '\n'
-const int MAX = 1e17;
 
-int n;
-string s, t;
-vector <string> ans;
-stack <char> st;
-map <pair <stack <char>, ii>, int> mp1, mp2;
-map <pair <stack <char>, ii>, bool> vis;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 
-void add(int &a, int &b, const int &c, const int &d) {
-    a += c;
-    b += d;
-    if (a >= MAX)
-        a -= MAX, b++;
-}
-
-void Try(int i, int j) {
-    vis[{st, {i, j}}] = 1;
-    if (j < n) {
-        if (i < n) {
-            st.push(s[i]);
-            if (!vis[{st, {i + 1, j}}])
-                Try(i + 1, j);
-            stack <char> tmp = st;
-            tmp.pop();
-            add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i + 1, j}}], mp2[{st, {i + 1, j}}]);
-            st.pop();
-        }
-        if (st.size() && st.top() == t[j]) {
-            st.pop();
-            if (!vis[{st, {i, j + 1}}])
-                Try(i, j + 1);
-            stack <char> tmp = st;
-            tmp.push(t[j]);
-            add(mp1[{tmp, {i, j}}], mp2[{tmp, {i, j}}], mp1[{st, {i, j + 1}}], mp2[{st, {i, j + 1}}]);
-            st.push(t[j]);
-        }
+vector <TreeNode*> Build(int n, TreeNode* p) {
+    vector <TreeNode*> cur;
+    if (!n) {
+        cur.push_back(NULL);
+        return cur;
     }
-}
-
-void Find(int i, int j, string command) {
-    if (j == n) {
-        ans.push_back(command);
+    for (int i = 0; i <= n; i += 2) {
+        p->left = new TreeNode(0);
+        p->right = new TreeNode(0);
+        vector <TreeNode*> l = Build(i, p->left);
+        vector <TreeNode*> r = Build(n - i, p->right);
+        for (int i1 = 0; i1 < l.size(); i1++)
+            for (int i2 = 0; i2 < r.size(); i2++) {
+                cur.push_back(new TreeNode(0, l[i1], r[i2]));
+            }
     }
-    else {
-        if (i < n) {
-            st.push(s[i]);
-            Find(i + 1, j, command + "1");
-            st.pop();
-        }
-        if (st.size() && st.top() == t[j]) {
-            st.pop();
-            Find(i, j + 1, command + "2");
-            st.push(t[j]);
-        }
-    }
+    return cur;
 }
 
 signed main() {
@@ -73,25 +44,14 @@ signed main() {
 		freopen((Fname + ".inp").c_str(), "r", stdin);
 		freopen((Fname + ".out").c_str(), "w", stdout);
 	#endif
+
 	// int _nt; cin >> _nt;
 	int _nt = 1;
 	while (_nt--) {
-        cin >> s >> t;
-        n = s.size();
-        mp1[{st, {n, n}}] = 1;
-        Try(0, 0);
-        if (mp2[{st, {0, 0}}]) {
-            cout << mp2[{st, {0, 0}}];
-            int n = 17 - to_string(mp1[{st, {0, 0}}]).size();
-            while (n--)
-                cout << "0";
-        }
-        cout << mp1[{st, {0, 0}}];
-        if (!mp2[{st, {0, 0}}] && mp1[{st, {0, 0}}] <= 1000) {
-            Find(0, 0, "");
-            for (int i = 0; i < ans.size(); i++)
-                cout << endl << ans[i];
-        }
+		// Code here
+        TreeNode* root = new TreeNode(0);
+        int n = 3;
+        vector <TreeNode*> res = Build(n - 3, root);
 	}
 	
 	return 0;

@@ -9,7 +9,6 @@ using namespace std;
 #define se second
 #define endl '\n'
 
-
 signed main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -18,18 +17,15 @@ signed main() {
 		freopen((Fname + ".out").c_str(), "w", stdout);
 	#endif
 
-	cerr << char(80);
-	return 0;
-
 	int _nt; cin >> _nt;
-	// int _nt = 1;
 	while (_nt--) {
-        int k;
-        cin >> k;
-        if (k == 0)
-            cout << "0\n";
-        else
-            cout << k - k * 2 / 3 << endl;
+		// Code here
+        int a, m, k;
+        cin >> a >> m >> k;
+        int numer = k * k, deno = 4 * (a * a + m * m);
+        int tmp = __gcd(numer, deno);
+        numer /= tmp, deno /= tmp;
+        cout << numer << ' ' << deno << endl;
 	}
 	
 	return 0;

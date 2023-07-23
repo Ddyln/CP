@@ -78,6 +78,25 @@ void Find(int i, int j, string command) {
     }
 }
 
+void solve() {
+    cin >> s >> t;
+    n = s.size();
+    mp1[{st, n}] = 1;
+    Try(0, 0);
+    if (mp2[{st, 0}]) {
+        cout << mp2[{st, 0}];
+        int n = 17 - to_string(mp1[{st, 0}]).size();
+        while (n--)
+            cout << "0";
+    }
+    cout << mp1[{st, 0}];
+    if (!mp2[{st, 0}] && mp1[{st, 0}] <= 1000) {
+        Find(0, 0, "");
+        for (int i = 0; i < ans.size(); i++)
+            cout << endl << ans[i];
+    }
+}
+
 signed main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -88,22 +107,7 @@ signed main() {
 	// int _nt; cin >> _nt;
 	int _nt = 1;
 	while (_nt--) {
-        cin >> s >> t;
-        n = s.size();
-        mp1[{st, n}] = 1;
-        Try(0, 0);
-        if (mp2[{st, 0}]) {
-            cout << mp2[{st, 0}];
-            int n = 17 - to_string(mp1[{st, 0}]).size();
-            while (n--)
-                cout << "0";
-        }
-        cout << mp1[{st, 0}];
-        if (!mp2[{st, 0}] && mp1[{st, 0}] <= 1000) {
-            Find(0, 0, "");
-            for (int i = 0; i < ans.size(); i++)
-                cout << endl << ans[i];
-        }
+        solve();
 	}
 	
 	return 0;
