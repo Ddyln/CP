@@ -8,11 +8,24 @@ using namespace std;
 #define fi first
 #define se second
 #define endl '\n'
-const int N = 2e5 + 5;
-const int MASK = (1 << 26) - 1;
 
-int n, a[N], res = 0, cnt[26];
-string s[N];
+int strangePrinter(string s) {
+	int n = s.size();
+	vector<vector<int>> dp(n, vector<int>(n, 0));
+	
+	for (int i = n-1; i >= 0; --i) {
+		dp[i][i] = 1;
+		for (int j = i+1; j < n; ++j) {
+			dp[i][j] = dp[i][j-1] + 1;
+			for (int k = i; k < j; ++k) {
+				if (s[k] == s[j]) {
+					dp[i][j] = min(dp[i][j], dp[i][k] + (k+1<=j-1 ? dp[k+1][j-1] : 0));
+				}
+			}
+		}
+	}
+	return dp[0][n-1];
+}
 
 signed main() {
 	ios_base::sync_with_stdio(false);
@@ -22,31 +35,9 @@ signed main() {
 		freopen((Fname + ".ans").c_str(), "w", stdout);
 	#endif
 
-	// int _nt; cin >> _nt;
-	int _nt = 1;
-	while (_nt--) {
-		// Code here
-        cin >> n;
-        for (int i = 1; i <= n; i++) 
-			cin >> s[i];
-		for (int i = 1; i < n; i++)
-			for (int j = i + 1; j <= n; j++) {
-				string tmp = s[i] + s[j];
-				int numChar = 0;
-				memset(cnt, 0, sizeof(cnt));
-				for (int k = 0; k < tmp.size(); k++)
-					if (++cnt[tmp[k] - 'a'] == 1)
-						numChar++;
-				if (numChar == 25) {
-					bool ok = 1;
-					for (int k = 0; k < 26; k++) 
-						if (cnt[k] != 0 && cnt[k] % 2 == 0)
-							ok = 0;
-					res += ok;
-				}
-			}
-		cout << res;
-	}
+	string s;
+	cin >> s;
+	cout << strangePrinter(s);
 	
 	return 0;
 }
