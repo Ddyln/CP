@@ -9,6 +9,21 @@ using namespace std;
 #define se second
 #define endl '\n'
 
+bool match(string s, string t, int p) {
+        for (int i = 0; i < t.size(); i++)
+            if (s[i + p] != t[i])
+                return 0;
+        return 1;
+    }
+
+bool wordBreak(string s, vector<string>& wordDict) {
+	vector <int> f(s.size() + 1, 0);
+	for (int i = 0; i < s.size(); i++)
+		if (match(s, wordDict[i], i)) {
+			f[i + wordDict[i].size()] |= 1;//(i ? f[i - 1] : true);
+		}
+	return f[s.size()];
+}
 int strangePrinter(string s) {
 	int n = s.size();
 	vector<vector<int>> dp(n, vector<int>(n, 0));
@@ -34,7 +49,7 @@ signed main() {
 		freopen((Fname + ".inp").c_str(), "r", stdin);
 		freopen((Fname + ".ans").c_str(), "w", stdout);
 	#endif
-
+	return 0;
 	string s;
 	cin >> s;
 	cout << strangePrinter(s);
