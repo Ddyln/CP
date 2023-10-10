@@ -7,9 +7,10 @@ const int _nt = 20000;
 
 void createTest(int id) {
     ofstream cout((Fname + ".inp").c_str());
-    int n = 4;
+    int n = rand() % 100 + 1;
+    cout << n << endl;
     for (int i = 0; i < n; i++)
-        cout << char(rand() % 5 + 'a');
+        cout << rand() % 1000 << ' ';
     cout.close();
 }
 

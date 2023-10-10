@@ -1,38 +1,44 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-#define Fname ((string) "test")
-// #define int long long
-#define ii pair <int, int>
-#define iii pair <int, ii>
-#define fi first
-#define se second
-#define endl '\n'
-
-int f[100][100][256];
-
-int solve(int l, int r, int ch, string& s) {
-    if (l == r)
-        return !(s[l] == ch);
-    if (f[l][r][ch])
-        return f[l][r][ch];
-    return f[l][r][ch] = min(solve(l + 1, r, s[l], s) + !(s[l] == ch), solve(l, r - 1, s[r], s) + !(s[r] == ch));
+void merge(int a[], int aux[], int l, int m, int r) {
+    int i, j, k;
+    // for (int k = l; k <= r; k++)
+    //     aux[k] = a[k];
+    i = l, j = m + 1, k = l;
+    while (i <= m && j <= r) {
+        if (aux[i] <= aux[j]) a[k++] = aux[i++];
+        else a[k++] = aux[j++];
+    }
+    while (i <= m)
+        a[k++] = aux[i++];
+    while (j <= r)
+        a[k++] = aux[j++];
 }
 
-int strangePrinter(string s) {
-    int n = s.size();
-    return solve(0, n - 1, 0, s);
+void mergeSort(int a[], int aux[], int l, int r) {
+    int *pSrc = a, *pDes = aux;
+    for (int sz = 1; sz <= r - l; sz *= 2) {
+        for (int i = l; i <= r; i += sz * 2) {
+            merge(pDes, pSrc, i, min(i + sz - 1, r), min(i + sz * 2 - 1, r));
+        }
+        swap(pSrc, pDes);
+    }
+    if (a != pSrc)
+        for (int i = l; i <= r; i++)
+            a[i] = aux[i];
 }
 
-signed main() {
-    ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	#ifdef lan_ngu
-		freopen((Fname + ".inp").c_str(), "r", stdin);
-		freopen((Fname + ".out").c_str(), "w", stdout);
-	#endif
-    string s;
-	cin >> s;
-	cout << strangePrinter(s);
+int main() {
+    int a[100000] = {0}, aux[100000] = {0}, n = 0;
+    freopen("test.inp", "r", stdin);
+	freopen("test.out", "w", stdout);
+    cin >> n;
+    for (int i = 0; i < n; i++)
+        cin >> a[i];
+
+    mergeSort(a, aux, 0, n - 1);
+    for (int i = 0; i < n; i++)
+        cout << a[i] << ' ';
     return 0;
 }
