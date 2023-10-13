@@ -1,58 +1,71 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define Fname ((string) "test")
 #define int long long
-#define ii pair <int, int>
-#define iii pair <int, ii>
-#define fi first
-#define se second
-#define endl '\n'
 
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+const int N = 1e4;
+const int mxa = 3e4;
+struct Line {
+    int x, l, r, type;
 };
 
-vector <TreeNode*> Build(int n, TreeNode* p) {
-    vector <TreeNode*> cur;
-    if (!n) {
-        cur.push_back(NULL);
-        return cur;
+int n, m, st[4 * mxa][2], lazy[4 * mxa];
+Line a[N << 1];
+
+bool cmp(const Line& a, const Line& b) {
+    return (a.x == b.x ? a.type < b.type : a.x < b.x);
+}
+
+void down(int id, int l, int r) {
+    int m = (l + r) >> 1;
+    lazy[id << 1] += lazy[id];
+    lazy[(id << 1) + 1] += lazy[id];
+    st[id << 1][1] += lazy[id];
+    st[(id << 1) + 1][1] += lazy[id];
+    st[id << 1][0] = (m - l + 1) * max(1LL, st[id << 1][1]);
+    st[(id << 1) + 1][0] = (r - m) * max(1LL, st[(id << 1) + 1][1]);
+    lazy[id] = 0;
+}
+
+void update(int id, int l, int r, int u, int v, int val) {
+    if (r < u || l > v)
+        return;
+    if (l >= u && r <= v) {
+        lazy[id] += val;
+        st[id][1] += val;
+        st[id][0] = (r - l + 1) * max(1LL, st[id][1]); 
+        return;
     }
-    for (int i = 0; i <= n; i += 2) {
-        p->left = new TreeNode(0);
-        p->right = new TreeNode(0);
-        vector <TreeNode*> l = Build(i, p->left);
-        vector <TreeNode*> r = Build(n - i, p->right);
-        for (int i1 = 0; i1 < l.size(); i1++)
-            for (int i2 = 0; i2 < r.size(); i2++) {
-                cur.push_back(new TreeNode(0, l[i1], r[i2]));
-            }
-    }
-    return cur;
+    down(id, l, r);
+    int m = (l + r) >> 1;
+    update(id << 1, l, m, u, v, val);
+    update((id << 1) + 1, m + 1, r, u, v, val);
+    st[id][0] = st[id << 1][0] + st[(id << 1) + 1][0];
 }
 
 signed main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	#ifdef lan_ngu
-		freopen((Fname + ".inp").c_str(), "r", stdin);
-		freopen((Fname + ".out").c_str(), "w", stdout);
-	#endif
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    #ifdef lan_ngu
+        freopen("test.inp", "r", stdin);
+        freopen("test.out", "w", stdout);
+    #endif
 
-	// int _nt; cin >> _nt;
-	int _nt = 1;
-	while (_nt--) {
-		// Code here
-        TreeNode* root = new TreeNode(0);
-        int n = 3;
-        vector <TreeNode*> res = Build(n - 3, root);
-	}
-	
-	return 0;
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        int x1, y1, x2, y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+        a[(i << 1) - 1] = {x1, y1 , y2, 1};
+        a[i << 1] = {x2, y1 , y2, -1};
+        m = max(m, y2);
+    }
+    sort(a + 1, a + 1 + (n << 1), cmp);
+    int res = 0;
+    for (int i = 1; i < (n << 1); i++) {
+        update(1, 1, m, a[i].l, a[i].r, a[i].type);
+        res += st[1] * (a[i + 1].x - a[i].x);
+        cout << res << endl;
+    }
+    cout << res;
+    return 0;
 }
