@@ -63,7 +63,7 @@ signed main() {
     int res = 0;
     for (int i = 1; i < (n << 1); i++) {
         update(1, 1, m, a[i].l, a[i].r, a[i].type);
-        res += st[1] * (a[i + 1].x - a[i].x);
+        res += st[1][0] * (a[i + 1].x - a[i].x);
         cout << res << endl;
     }
     cout << res;
