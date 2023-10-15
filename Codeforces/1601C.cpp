@@ -2,9 +2,6 @@
 using namespace std;
 
 #define Fname ((string) "test")
-#define int long long
-#define ii pair <int, int>
-#define iii pair <int, ii>
 #define fi first
 #define se second
 #define endl '\n'
@@ -89,11 +86,12 @@ signed main() {
         }
         
         sort(v.begin(), v.end());
-        int sz = unique(v.begin(), v.end()) - v.begin(), inv = 0;
+        int sz = unique(v.begin(), v.end()) - v.begin();
+        long long inv = 0;
         make(1, 1, sz);
         for (int i = 1; i <= n; i++) {
             a[i] = lower_bound(v.begin(), v.begin() + sz, a[i]) - v.begin() + 1;
-            inv += get(1, 1, sz, a[i] + 1, sz);
+            inv += 1LL * get(1, 1, sz, a[i] + 1, sz);
             update(1, 1, sz, a[i], 1);
         }
         for (int i = 1; i <= m; i++)
@@ -102,11 +100,18 @@ signed main() {
         sort(b + 1, b + 1 + m);
         dnq(1, m, 1, n + 1);
         make(1, 1, sz);
-        int l = 1;
+        int j = 1;
         for (int i = 1; i <= m; i++) {
-            while (l < p[i]) 
-                update(1, 1, sz, a[l++], 1);
-            inv += get(1, 1, sz, b[i] + 1, sz);
+            while (j < p[i]) 
+                update(1, 1, sz, a[j++], 1);
+            inv += 1LL * get(1, 1, sz, b[i] + 1, sz);
+        }
+        make(1, 1, sz);
+        j = n;
+        for (int i = m; i > 0; i--) {
+            while (j >= p[i])
+                update(1, 1, sz, a[j--], 1);
+            inv += 1LL * get(1, 1, sz, 1, b[i] - 1);
         }
         cout << inv << endl;
 	}
