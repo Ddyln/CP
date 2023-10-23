@@ -22,7 +22,9 @@ int main() {
     int a[60] = {3, 2, 4, 1, 10};
     radixsort(a, 0, 4);
 
-    for (int i = 0; i <= 4; i++)
-        cout << a[i] << ' ';
+    // for (int i = 0; i <= 4; i++)
+    //     cout << a[i] << ' ';
+    int x = 0b01010101010101010101010101010101;
+    cout << (x & 3);
     return 0;   
 }
