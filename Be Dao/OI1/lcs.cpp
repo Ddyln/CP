@@ -52,6 +52,8 @@ signed main() {
                     if (f[i - 1][j].fi == f[i][j - 1].fi)
                         f[i][j].se = max(f[i - 1][j].se, f[i][j - 1].se);
                 }
+                if (a[i] == b[j])
+                    f[i][j] = {f[i - 1][j - 1].fi + 1, f[i - 1][j - 1].se};
         }
 	}
 	
