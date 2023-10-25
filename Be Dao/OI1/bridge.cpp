@@ -80,32 +80,37 @@ bool isAncestor(int u, int v) {
 }
 
 bool related(int A, int B) {
-    return (isAncestor(A, B) || isAncestor(B, A));
+    if (h[A] > h[B])
+        swap(A, B);
+    return isAncestor(A, B);
+}
+
+int intersect(int A, int B, int u, int v) {
+    if (h[A] > h[B])
+        swap(A, B);
+    if (h[u] > h[v])
+        swap(u, v);
+    if (!related(A, u))
+        return 0;
+    if (!related(v, B)) {
+        for (int i = 17; i >= 0; i--)   
+            if (!related(par[v][i], B))
+                v = par[v][i];
+        v = par[v][0];
+    }
+    if (!isAncestor(B, u) && !isAncestor(v, A)) 
+        return calc((h[A] > h[u] ? A : u), (h[B] > h[v] ? v : B));
+    return 0;
 }
 
 int query(int A, int B, int u, int v) {
-    int k = lca(u, v), k2, res = calc(u, v);
-    if (A == B)
-        return res;
-    if (related(A, B)) {
-        if (related(A, k) && related(B, k)) {
-            if (h[A] > h[B])
-                swap(A, B);
-            if (related(u, B))
-                res -= calc((h[B] > h[u] ? u : B), (h[A] > h[k] ? A : k));
-            if (related(v, B))
-                res -= calc((h[B] > h[v] ? v : B), (h[A] > h[k] ? A : k));
-        }
-    }
-    else if (related(k2 = lca(A, B), k)) {
-        if (related(A, u))
-            res -= calc((h[A] > h[u] ? u : A), (h[k2] > h[k] ? k2 : k));
-        if (related(A, v))
-            res -= calc((h[A] > h[v] ? v : A), (h[k2] > h[k] ? k2 : k));
-        if (related(B, u))
-            res -= calc((h[B] > h[u] ? u : B), (h[k2] > h[k] ? k2 : k));
-        if (related(B, v))
-            res -= calc((h[B] > h[v] ? v : B), (h[k2] > h[k] ? k2 : k));
+    int k = lca(u, v), res = calc(u, v);
+    if (related(A, B)) 
+        res -= intersect(A, B, k, u) + intersect(A, B, k, v);
+    else {
+        int k2 = lca(A, B);
+        res -= intersect(A, k2, k, u) + intersect(A, k2, k, v);
+        res -= intersect(B, k2, k, u) + intersect(B, k2, k, v);
     }
     return res;
 }
