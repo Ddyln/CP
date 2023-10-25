@@ -8,11 +8,11 @@ using namespace std;
 #define se second
 #define endl '\n'
 
-const int N = 1e4 + 4;
+const int N = 2e4 + 4;
 const int MOD = 123456789;
 
 int n, m, a[N], b[N];
-ii f[N][N];
+ii f[2][N];
 vector <int> v, pos[2 * N];
 set <int> s;
 
@@ -35,26 +35,34 @@ signed main() {
 	int _nt = 1;
 	while (_nt--) {
         cin >> n >> m;
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= n; i++) 
             cin >> a[i];
-            v.push_back(a[i]);
-        }
-        for (int i = 1; i <= m; i++) {
+        for (int i = 1; i <= m; i++) 
             cin >> b[i];
-            v.push_back(b[i]);
-        }
-        for (int i = 1; i <= n; i++)
+
+        for (int i = 0; i < 2; i++)
+            f[i][0] = {0, 1};
+        for (int i = 0; i <= m; i++)
+            f[0][i] = {0, 1};
+
+        for (int i = 1; i <= n; i++) {
+            int cur = i & 1, prv = cur ^ 1;
             for (int j = 1; j <= m; j++) {
-                if (f[i - 1][j].fi > f[i][j - 1].fi)
-                    f[i][j] = f[i - 1][j];
+                if (f[prv][j].fi > f[cur][j - 1].fi)
+                    f[cur][j] = f[prv][j];
                 else {
-                    f[i][j] = f[i][j - 1];
-                    if (f[i - 1][j].fi == f[i][j - 1].fi)
-                        f[i][j].se = max(f[i - 1][j].se, f[i][j - 1].se);
+                    f[cur][j] = f[cur][j - 1];
+                    if (f[prv][j].fi == f[cur][j - 1].fi) {
+                        f[cur][j].se = (f[prv][j].se + f[cur][j - 1].se) % MOD;
+                        if (f[prv][j - 1].fi == f[cur][j].fi)
+                            (f[cur][j].se -= f[prv][j - 1].se - MOD) %= MOD;
+                    }
                 }
                 if (a[i] == b[j])
-                    f[i][j] = {f[i - 1][j - 1].fi + 1, f[i - 1][j - 1].se};
+                    f[cur][j] = {f[prv][j - 1].fi + 1, f[prv][j - 1].se};
+            }
         }
+        cout << f[n & 1][m];
 	}
 	
 	return 0;
