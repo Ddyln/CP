@@ -12,15 +12,19 @@ const int N = 1e5 + 3;
 
 int n, m, q, par[N][20], cnt[N][20], num[N], low[N], h[N], Time = 0;
 vector <int> a[N];
-bool vis[N];
+bitset <N> vis, check;
 
 void dfs(int u) {
     num[u] = low[u] = ++Time;
     for (int i = 1; i <= 17; i++)
         par[u][i] = par[par[u][i - 1]][i - 1];
-    for (int v : a[u]) 
-        if (v == par[u][0])
-            continue;
+    for (int v : a[u]) {
+        if (v == par[u][0]) {
+            if (!check[u]) 
+                check[u] = 1;
+            else    
+                low[u] = min(low[u], num[v]);
+        }
         else if (!num[v]) {
             par[v][0] = u;
             h[v] = h[u] + 1;
@@ -32,6 +36,7 @@ void dfs(int u) {
         }
         else    
             low[u] = min(low[u], num[v]);
+    }
 }  
 
 void buildTable(int u) {
@@ -86,18 +91,15 @@ bool related(int A, int B) {
 }
 
 int intersect(int A, int B, int u, int v) {
-    if (h[A] > h[B])
-        swap(A, B);
-    if (h[u] > h[v])
-        swap(u, v);
+    if (A == B || u == v)
+        return 0;
+    if (h[A] > h[B]) swap(A, B);
+    if (h[u] > h[v]) swap(u, v);
     if (!related(A, u))
         return 0;
-    if (!related(v, B)) {
-        for (int i = 17; i >= 0; i--)   
-            if (!related(par[v][i], B))
-                v = par[v][i];
-        v = par[v][0];
-    }
+    B = v = lca(B, v);
+    if (h[B] < h[A]) B = A;
+    if (h[v] < h[u]) v = u;
     if (!isAncestor(B, u) && !isAncestor(v, A)) 
         return calc((h[A] > h[u] ? A : u), (h[B] > h[v] ? v : B));
     return 0;
@@ -117,7 +119,7 @@ int query(int A, int B, int u, int v) {
 
 signed main() {
 	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
+	cin.tie(NULL); cout.tie(NULL);
     #ifdef lan_ngu
         freopen("test.inp", "r", stdin);
         freopen("test.out", "w", stdout);
