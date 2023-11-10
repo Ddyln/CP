@@ -122,8 +122,6 @@ string toString(int n) {
 }
 
 int main() {
-	freopen("test.inp", "r", stdin);
-	freopen("test.out", "w", stdout);
 	Stack <int> st(-1);
 	st.push(1);
 	st.push(2);
