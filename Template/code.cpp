@@ -23,7 +23,7 @@ signed main() {
 	// int _nt; cin >> _nt;
 	int _nt = 1;
 	while (_nt--) {
-		// Code here
+
 	}
 	
 	return 0;
