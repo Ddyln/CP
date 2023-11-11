@@ -4,20 +4,27 @@ using namespace std;
 template <class T>
 struct Node {
 	T data;
-	Node* next, *prv;
-	Node(T _data, Node* _next, Node* _prv) {
+	Node<T>* next = nullptr, * prv = nullptr;
+	Node<T>(T _data, Node* _next, Node* _prv) {
 		data = _data;
 		next = _next;
 		prv = _prv;
 	}
+	Node<T>() {}
 };
 
 template <class T>
 struct Stack {
-	Node<T> *dummy1, *dummy2, *tail;
+	Node<T>* dummy1, * dummy2, * tail;
 	int size;
-
-	Stack(T data) {
+	Stack <T> () {
+		dummy2 = new Node<T>;
+		dummy1 = new Node<T>;
+		dummy2->prv = dummy1;
+		tail = dummy1;
+		size = 0;
+	}
+	Stack <T> (T data) {
 		dummy2 = new Node<T>(data, nullptr, nullptr);
 		dummy1 = new Node<T>(data, dummy2, nullptr);
 		dummy2->prv = dummy1;
@@ -51,10 +58,17 @@ struct Stack {
 
 template <class T>
 struct Queue {
-	Node<T> * dummy1, * dummy2, * tail, *head;
+	Node<T>* dummy1, * dummy2, * tail, * head;
 	int size;
 
-	Queue(T data) {
+	Queue <T>() {
+		dummy2 = new Node<T>;//(data, nullptr, nullptr);
+		dummy1 = new Node<T>;//(data, dummy2, nullptr);
+		dummy2->prv = dummy1;
+		head = tail = dummy1;
+		size = 0;
+	}
+	Queue <T>(T data) {
 		dummy2 = new Node<T>(data, nullptr, nullptr);
 		dummy1 = new Node<T>(data, dummy2, nullptr);
 		dummy2->prv = dummy1;
@@ -90,6 +104,7 @@ struct Queue {
 	}
 };
 
+
 double toNum(string s) {
 	if (s == "0")
 		return 0;
@@ -122,11 +137,6 @@ string toString(int n) {
 }
 
 int main() {
-	Stack <int> st(-1);
-	st.push(1);
-	st.push(2);
-	st.push(3);
-		
 	string s = "";
 	getline(cin, s);
 	string input[100];
@@ -145,8 +155,8 @@ int main() {
 		}
 	}
 	input[n++] = ")";
-	Stack <string> dau("");
-	Queue <string> bieu_thuc("");
+	Stack <string> dau;
+	Queue <string> bieu_thuc;
 	for (int i = 0; i < n; i++) {
 		// for (Node<string>* p = dau.dummy1->next; p != dau.dummy2; p = p->next)
 		// 	cout << p->data << ' ';
@@ -179,7 +189,7 @@ int main() {
 		}
 	}
 
-	Stack <double> so(-1);
+	Stack <double> so;
 	for (Node <string> *p = bieu_thuc.head; p != bieu_thuc.dummy2; p = p->next) {
 		// cerr << p->data << ' ';
 		if (!isdigit(p->data[0])) {

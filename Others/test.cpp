@@ -1,23 +1,31 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
 using namespace std;
 
 template <class T>
 struct Node {
 	T data;
-	Node* next, *prv;
-	Node(T _data, Node* _next, Node* _prv) {
+	Node<T>* next = nullptr, * prv = nullptr;
+	Node<T>(T _data, Node* _next, Node* _prv) {
 		data = _data;
 		next = _next;
 		prv = _prv;
 	}
+	Node<T>() {}
 };
 
 template <class T>
 struct Stack {
-	Node<T> *dummy1, *dummy2, *tail;
+	Node<T>* dummy1, * dummy2, * tail;
 	int size;
-
-	Stack(T data) {
+	Stack <T> () {
+		dummy2 = new Node<T>;
+		dummy1 = new Node<T>;
+		dummy2->prv = dummy1;
+		tail = dummy1;
+		size = 0;
+	}
+	Stack <T> (T data) {
 		dummy2 = new Node<T>(data, nullptr, nullptr);
 		dummy1 = new Node<T>(data, dummy2, nullptr);
 		dummy2->prv = dummy1;
@@ -51,10 +59,17 @@ struct Stack {
 
 template <class T>
 struct Queue {
-	Node<T> * dummy1, * dummy2, * tail, *head;
+	Node<T>* dummy1, * dummy2, * tail, * head;
 	int size;
 
-	Queue(T data) {
+	Queue <T>() {
+		dummy2 = new Node<T>;//(data, nullptr, nullptr);
+		dummy1 = new Node<T>;//(data, dummy2, nullptr);
+		dummy2->prv = dummy1;
+		head = tail = dummy1;
+		size = 0;
+	}
+	Queue <T>(T data) {
 		dummy2 = new Node<T>(data, nullptr, nullptr);
 		dummy1 = new Node<T>(data, dummy2, nullptr);
 		dummy2->prv = dummy1;
@@ -90,45 +105,14 @@ struct Queue {
 	}
 };
 
-double toNum(string s) {
-	if (s == "0")
-		return 0;
-	double res1 = 0, res2 = 0;
-	int start = 0, sign = 1, n = s.size(), dot = n;
-	if (s[0] == '-')
-		sign = -1, start++;
-	for (int i = start; i < n; i++)
-		if (s[i] == '.') {
-			dot = i;
-			break;
-		}
-	for (int i = start; i < dot; i++)
-		res1 = res1 * 10 + (s[i] - '0');
-	for (int i = n - 1; i > dot; i--)
-		res2 = res2 / 10 + (s[i] - '0') / 10.0;
-	return sign * (res1 + res2);
-}
-
-string toString(int n) {
-	if (n == 0)
-		return "0";
-	string res = "";
-	while (n) {
-		res += char(n % 10 + '0');
-		n /= 10;
-	}
-	reverse(res.begin(), res.end());
-	return res;
+bool isOperator(string s) {
+	return (s == "and" || s == "or" || s == "not" || s == "(" || s == ")");
 }
 
 int main() {
 	freopen("test.inp", "r", stdin);
 	freopen("test.out", "w", stdout);
-	Stack <int> st(-1);
-	st.push(1);
-	st.push(2);
-	st.push(3);
-		
+
 	string s = "";
 	getline(cin, s);
 	string input[100];
@@ -137,26 +121,23 @@ int main() {
 	while (i < s.size()) {
 		if (s[i] == ' ')
 			i++;
-		else if (!isdigit(s[i]))
-			input[n++] = s[i++];
-		else {
+		else if (s[i] == '(' || s[i] == ')') {
 			input[n] = "";
-			while (i < s.size() && isdigit(s[i]))
-				input[n] += s[i++];
-			n++;
+			input[n++] += s[i++];
+		}
+		else {
+			string tmp = "";
+			while (i < s.size() && s[i] != ' ' && s[i] != '(' && s[i] != ')')
+				tmp += s[i++];
+			input[n++] = tmp;
 		}
 	}
 	input[n++] = ")";
-	Stack <string> dau("");
-	Queue <string> bieu_thuc("");
+
+	Stack <string> dau;
+	Queue <string> bieu_thuc;
 	for (int i = 0; i < n; i++) {
-		// for (Node<string>* p = dau.dummy1->next; p != dau.dummy2; p = p->next)
-		// 	cout << p->data << ' ';
-		// cout << endl;
-		// cout << input[i] << ' ';
-		if (isdigit(input[i][0]))
-			bieu_thuc.push(input[i]);
-		else {
+		if (isOperator(input[i])) {
 			if (input[i] == ")") {
 				while (dau.size && dau.top() != "(")
 					bieu_thuc.push(dau.top()), dau.pop();
@@ -165,42 +146,49 @@ int main() {
 			}
 			else if (input[i] == "(")
 				dau.push("(");
-			else if (input[i] == "+" || input[i] == "-") {
-				while (dau.size && (dau.top() == "*" || dau.top() == "/")) 
+			else if (input[i] == "or") {
+				while (dau.size && dau.top() == "and")
 					bieu_thuc.push(dau.top()), dau.pop();
 				dau.push(input[i]);
 			}
-			else if (input[i] == "/") {
+			else 
 				dau.push(input[i]);
-			}
-			else {
-				while (dau.size && dau.top() == "/")
-					bieu_thuc.push(dau.top()), dau.pop();
-				dau.push(input[i]);
-			}
+		}
+		else {
+			bieu_thuc.push(input[i]);
 		}
 	}
 
-	Stack <double> so(-1);
-	for (Node <string> *p = bieu_thuc.head; p != bieu_thuc.dummy2; p = p->next) {
-		// cerr << p->data << ' ';
-		if (!isdigit(p->data[0])) {
-			double b = so.top();
-			so.pop();
-			double a = so.top(); 
-			so.pop();
-			if (p->data == "+")
-				so.push(a + b);
-			else if (p->data == "-")
-				so.push(a - b);
-			else if (p->data == "*")
-				so.push(a * b);
-			else if (p->data == "/") 
-				so.push(a / b);
+	Stack <Queue <string>> res;
+	for (Node <string>* p = bieu_thuc.head; p != bieu_thuc.dummy2; p = p->next) {
+		// cout << p->data << ' ';
+		if (isOperator(p->data)) {
+			Queue <string> a(""), b("");
+			b = res.top();
+			res.pop();
+			a = res.top();
+			res.pop();
+			if (p->data == "or") {
+				for (Node <string>* i = b.head; i != b.dummy2; i = i->next)
+					a.push(i->data);
+				res.push(a);
+			}
+			else {
+				Queue <string> tmp("");
+				for (Node <string>* i = a.head; i != a.dummy2; i = i->next)
+					for (Node <string>* j = b.head; j != b.dummy2; j = j->next)
+						tmp.push(i->data + " and " + j->data);
+				res.push(tmp);
+			}
 		}
-		else 
-			so.push(toNum(p->data));
+		else {
+			Queue <string> tmp("");
+			tmp.push(p->data);
+			res.push(tmp);
+		}
 	}
-	cout << so.top();
+
+	for (Node <string>* p = res.top().head; p != res.top().dummy2; p = p->next) 
+		cout << "(" << p->data << ")" << (p->next == res.top().dummy2 ? "" : " or ");
 	return 0;
 }
