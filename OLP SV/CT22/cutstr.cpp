@@ -1,12 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define int long long
-const int MOD = 1e9 + 7;
+#define ll long long
+const ll MOD = 1e9 + 7;
 const int P = 31;
 const int N = 1e4 + 5;
+const int INF = 1e9;
 
-int k, n, h[N][2], p[N], l[N], f[202][8195];
+int k, n, l[15], f[8195];
+ll h[N][2], p[N];
 string s;
 
 int GetHash(int i, int j) {
@@ -19,6 +21,13 @@ int GetRevHash(int i, int j) {
 
 bool IsPalind(int i, int j) {
     return (j <= n && GetHash(i, j) == GetRevHash(i, j));
+}
+
+void optimize(int& f, int val) {
+    if (~f)
+        f = min(f, val);
+    else
+        f = val;
 }
 
 signed main() {
@@ -39,40 +48,31 @@ signed main() {
     p[0] = 1;
     for (int i = 1; i <= 10000; i++)
         p[i] = p[i - 1] * P % MOD;
-
+    vector <vector <int>> v(n);
+    for (int len = 0; len < n; len++)
+        for (int i = 1; i <= n - len; i++) 
+            if (IsPalind(i, i + len))
+                v[len].push_back(i);
+    
     while (k--) {
-        int m;
-        cin >> m;
-        if (m == 1) {
-            cin >> l[1];
-            bool ok = 0;
-            for (int i = l[1]; i <= n; i++)
-                if (IsPalind(i - l[1] + 1, i)) {
-                    ok = 1;
-                    break;
-                }        
-            cout << (ok ? "YES\n" : "NO\n");
-            continue;
-        }
-        f[0][0] = 1;
-        for (int i = 0; i < m; i++)
+        int m; cin >> m;
+        for (int i = 0; i < m; i++) {
             cin >> l[i];
+            l[i]--;
+        }
         int M = (1 << m);
-        for (int i = 0; i < n; i++)
-            for (int mask = 0; mask < M; mask++)
-                if (f[i][mask]) {
-                    f[i + 1][mask] = f[i][mask];
-                    for (int j = 0; j < m; j++)
-                        if (!(mask & (1 << j))) {
-                            if (IsPalind(i + 1, i + l[j]))
-                                f[i + l[j]][mask | (1 << j)] = f[i][mask];
-                        }
-                }
-        cout << (f[n][--M] ? "YES\n" : "NO\n");
-        if (k)
-            for (int i = 0; i < n; i++)
-                for (int mask = 0; mask < M; mask++)
-                    f[i][mask] = 0;
-    }
+        fill(f, f + M, INF);
+        f[0] = 0;
+        for (int mask = 0; mask < M; mask++)
+            if (f[mask] <= n) {
+                for (int i = 0; i < m; i++)
+                    if (!(mask & (1 << i)) && l[i] + f[mask] < n) {
+                        auto it = upper_bound(v[l[i]].begin(), v[l[i]].end(), f[mask]);
+                        if (it != v[l[i]].end()) 
+                            optimize(f[mask | (1 << i)], *it + l[i]);
+                    }
+            }
+        cout << (f[--M] <= n ? "YES\n" : "NO\n");
+   }
     return 0;
-}
+}   
