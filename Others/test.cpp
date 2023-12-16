@@ -1,76 +1,88 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-const int N = 1e5 + 3;
+const int MOD = 1000000007;
+const int maxn = 1000000 + 5; //10^6 + 5
+bool is_prime[maxn];
 
-int n, k, q, a[N], pos[N];
-vector <vector <int>> st;
-
-void Build(int id, int l, int r) {
-    if (l == r) {
-        st[id].push_back(a[l]);
-        return;
+void Eratosthenes(int n){
+    for (int i = 2; i <= n; i++)
+        is_prime[i] = true;
+    for (int i = 2; i * i <= n; i++) {
+        if (is_prime[i]) {
+            for (int j = i * i; j <= n; j += i)
+                is_prime[j] = false;
+        }
     }
-    int m = (l + r) / 2;
-    Build(id * 2, l, m);
-    Build(id * 2 + 1, m + 1, r);
-    merge(st[id * 2].begin(), st[id * 2].end(), st[id * 2 + 1].begin(), st[id * 2 + 1].end(), back_inserter(st[id]));
 }
 
-int Find(int id, int l, int r, int u, int v, int val) {
-    if (r < u || l > v)
-        return 0;
-    if (l >= u && r <= v) {
-        return upper_bound(st[id].begin(), st[id].end(), val) - st[id].begin();
+int min_prime[maxn] = { 0 };
+
+void sieve(int n)
+{
+    for (int i = 2; i * i <= n; ++i) {
+        if (min_prime[i] == 0) {
+            for (int j = i * i; j <= n; j += i) {
+                if (min_prime[j] == 0) {
+                    min_prime[j] = i;
+                }
+            }
+        }
     }
-    int m = (l + r) / 2;
-    return Find(id * 2, l, m, u, v, val) + Find(id * 2 + 1, m + 1, r, u, v, val);
+    for (int i = 2; i <= n; ++i) {
+        if (min_prime[i] == 0) {
+            min_prime[i] = i;
+        }
+    }
 }
 
-int cnp(int l, int r, int u, int v, int k) {
-
-    int ans;
-    while (l <= r) {
-        int m = (l + r) / 2, tmp;
-        tmp = Find(1, 1, n, u, v, m);
-
-        if (tmp >= k) {
-            ans = m;
-            r = m - 1;
-        } else l = m + 1;
-    }
-    return ans;
+// n^k
+long long Pow(int n, int k) {
+    if (k < 1) return 1;
+    if (k == 1) return n % MOD;
+    long long ans = Pow(n, k / 2);
+    (ans *= ans) %= MOD;
+    return (k % 2 == 1 ? ans * n % MOD : ans);
 }
 
-signed main() {
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    if(fopen("test.inp", "r"))
+int main()
+{
+    freopen("test.inp", "r", stdin);
+    Eratosthenes(maxn);
+    sieve(maxn);
+    int n, m;
+    cin >> n;
+    vector<int> a(maxn, 0);
+    vector<int> b(maxn, 0);
+    for (int i = 0; i < n; i++)
     {
-        freopen("test.inp", "r", stdin);
-        freopen("test.out", "w", stdout);
+        int k;
+        cin >> k;
+        while (k != 1)
+        {
+            a[min_prime[k]]++;
+            k /= min_prime[k];
+        }
     }
-    cin >> n >> q >> k;
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-        pos[a[i]] = i;
+    cin >> m;
+    for (int i = 0; i < m; i++)
+    {
+        int k;
+        cin >> k;
+        while (k != 1)
+        {
+            b[min_prime[k]]++;
+            k /= min_prime[k];
+        }
     }
-    st.resize(4 * n + 4);
-    Build(1, 1, n);
-
-    stack <pair <int, int>> s;
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        s.push({l, r});
+    unsigned long long S = 1;
+    for (int i = 0; i < maxn; i++)
+    {
+        if(is_prime[i])
+        {
+            (S *= Pow(i, min(a[i], b[i]))) %= MOD;
+        }
     }
-
-    while (s.size()) {
-        int l = s.top().first, r = s.top().second;
-        s.pop();
-        if (r < k || l > k)
-            continue;
-        k = pos[cnp(1, n, 1, r - l + 1, k - l + 1)] + l - 1;
-    }
-    cout << k;
+    cout << S;
     return 0;
 }
