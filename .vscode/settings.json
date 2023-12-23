@@ -7,7 +7,9 @@
         "sstream": "cpp",
         "tuple": "cpp",
         "iostream": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "type_traits": "cpp"
     },
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.dimInactiveRegions": false
 }
