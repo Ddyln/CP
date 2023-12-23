@@ -4,3 +4,4 @@
 *.gif
 *.exe
 *.o
+.vscode/
