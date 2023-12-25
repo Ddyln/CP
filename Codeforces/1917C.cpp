@@ -29,10 +29,10 @@ signed main() {
         for (int i = 1; i <= m; i++)
             cin >> b[i];
         int res = 0;
-        for (int i = 0; i < min({n * 2, m, d}); i++) {
+        for (int i = 0; i < min(n * 2, d); i++) {
             memset(tmp, 0, sizeof tmp);
             for (int j = 1; j <= i; j++)
-                tmp[1]++, tmp[b[j] + 1]--;
+                tmp[1]++, tmp[b[(j - 1) % m + 1] + 1]--;
             for (int j = 1; j <= n; j++)
                 tmp[j] += tmp[j - 1];
             int cnt = 0;
