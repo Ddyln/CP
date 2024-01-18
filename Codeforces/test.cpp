@@ -8,22 +8,10 @@ using namespace std;
 #define fi first
 #define se second
 #define endl '\n'
+const int N = 25;
 
-const int N = 1e5 + 5;
-struct RING {
-    int x, y;
-    int val;
-};
+int n, A[N];
 
-int n, f[N];
-RING a[N];
-
-bool cmp(const RING& a, const RING& b) {
-    if (a.y != b.y)
-        return a.y > b.y;
-    else    
-        return a.x > b.x;
-}
 signed main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -32,23 +20,28 @@ signed main() {
         freopen((Fname + ".ans").c_str(), "w", stdout);
     #endif
 
-	// int _nt; cin >> _nt;
-	int _nt = 1;
+	int _nt; cin >> _nt;
+	// int _nt = 1;
 	while (_nt--) {
         cin >> n;
         for (int i = 1; i <= n; i++) 
-            cin >> a[i].x >> a[i].y >> a[i].val;
-        sort(a + 1, a + 1 + n, cmp);
-        int res = 0;
-        for (int i = 1; i <= n; i++) {
-            f[i] = a[i].val;
-            for (int j = i - 1; j > 0; j--)
-                if (a[i].y > a[j].x)
-                    f[i] = max(f[i], f[j] + a[i].val);
-            res = max(res, f[i]);
-            cerr << f[i] << ' ';
+            cin >> A[i];
+        int res = 1e9;
+        for (int mask = 0; mask < (1 << n); mask++) {
+            vector <int> a, b;
+            for (int i = 0; i < n; i++)
+                if (mask & (1 << i))
+                    a.push_back(A[i + 1]);
+                else    
+                    b.push_back(A[i + 1]);
+            int s = 0;
+            for (int i = 1; i < a.size(); i++)
+                s += (a[i - 1] < a[i]);
+            for (int i = 1; i < b.size(); i++)
+                s += (b[i - 1] < b[i]);
+            res = min(res, s);
         }
-        cout << res;
+        cout << res << endl;
 	}
 	
 	return 0;
