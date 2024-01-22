@@ -23,25 +23,27 @@ signed main() {
 	int _nt; cin >> _nt;
 	// int _nt = 1;
 	while (_nt--) {
-        cin >> n;
-        for (int i = 1; i <= n; i++) 
-            cin >> A[i];
-        int res = 1e9;
-        for (int mask = 0; mask < (1 << n); mask++) {
-            vector <int> a, b;
-            for (int i = 0; i < n; i++)
-                if (mask & (1 << i))
-                    a.push_back(A[i + 1]);
-                else    
-                    b.push_back(A[i + 1]);
-            int s = 0;
-            for (int i = 1; i < a.size(); i++)
-                s += (a[i - 1] < a[i]);
-            for (int i = 1; i < b.size(); i++)
-                s += (b[i - 1] < b[i]);
-            res = min(res, s);
-        }
-        cout << res << endl;
+        map <int, int> a[10];
+        a[1][1]++, a[1][3]++;
+        a[2][2]++, a[2][3]++;
+        a[3][4]++;
+        a[4][5]++;
+        a[5][5]++, a[4][6]++;
+        a[6][4]++, a[6][6]++;
+        vector <int> v(6, 0);
+        for (int i = 0; i < 6; i++)
+            v[i] = i + 1;
+        int ans = 0;
+        do {
+            bool ok = 1;
+            for (int i = 0; i < 6; i++)
+                if (a[i + 1][v[i]])
+                    ok = 0;
+            if (ok) {
+                ans++;
+            }
+        } while (next_permutation(v.begin(), v.end()));
+        cerr << ans;
 	}
 	
 	return 0;
