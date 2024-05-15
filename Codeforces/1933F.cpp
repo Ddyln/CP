@@ -2,7 +2,6 @@
 using namespace std;
 
 #define Fname ((string) "test")
-#define int long long
 #define ii pair <int, int>
 #define iii pair <int, ii>
 #define fi first
@@ -10,8 +9,8 @@ using namespace std;
 #define endl '\n'
 const int N = 1003;
 const int INF = 1e9 + 7;
-
-int n, m, a[N][N], f[N][29 * N];
+const int C = 11;
+int n, m, a[N][N], f[N][C * N];
 
 bool inside(int x, int y) {
     return (x >= 0 && x < m && y >= 0 && y < n);
@@ -36,7 +35,7 @@ signed main() {
             for (int j = 0; j < n; j++)
                 cin >> a[i][j];
         for (int i = 0; i < m; i++)
-            for (int j = 0; j <= max(n, m) * 29; j++)
+            for (int j = 0; j <= max(n, m) * C; j++)
                 f[i][j] = -1;
         f[0][0] = 0;
         priority_queue <iii> q;
