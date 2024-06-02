@@ -1,74 +1,85 @@
 #include <iostream>
-#include <windows.h>
 #include <ctime>
-#include <unistd.h>
+#include <iomanip>
+#include <vector>
 #include <bits/stdc++.h>
+#include <stdexcept> // std::runtime_error
+#include <stdio.h>
+#include <conio.h>
+#include <Windows.h>
+
+#ifdef _WIN32
+    #include <windows.h>
+    #define CLEAR "cls"
+#else
+    #include <unistd.h>
+    #define CLEAR "clear"
+#endif
+
 using namespace std;
 
-void xuat() {
-    int TIME = clock() / 1000;
-    if (TIME < 3600)
-        cerr << "00:";
-    else {
-        if (TIME < 36000)
-            cerr << "0";
-        cerr << TIME / 3600 << ":";
-    }
-    TIME -= TIME / 3600 * 3600;
-    if (TIME < 60)
-        cerr << "00:";
-    else {
-        if (TIME < 600)
-            cerr << "0";
-        cerr << TIME / 60 << ":";
-    }
-    TIME -= TIME / 60 * 60;
-    if (TIME < 10)
-        cerr << "0";
-    cerr << TIME << endl;
-    string s;
-    ifstream cin("test.out");
-    cin >> s;
-    cin.close();
-    cerr << s << endl;
-}
+class MaxEnterException : public runtime_error {
+public:
+    MaxEnterException(const string& message) : runtime_error(message) {}
+};
 
-void luu() {
-    ofstream cout("test.out");
-    int TIME = clock() / 1000;
-    if (TIME < 3600)
-        cout << "00:";
-    else {
-        if (TIME < 36000)
-            cout << "0";
-        cout << TIME / 3600 << ":";
-    }
-    TIME -= TIME / 3600 * 3600;
-    if (TIME < 60)
-        cout << "00:";
-    else {
-        if (TIME < 600)
-            cout << "0";
-        cout << TIME / 60 << ":";
-    }
-    TIME -= TIME / 60 * 60;
-    if (TIME < 10)
-        cout << "0";
-    cout << TIME << endl;
-    cout.close();
-    xuat();
+void print_time(time_t elapsed) {
+    int hours = elapsed / 3600;
+    int minutes = (elapsed % 3600) / 60;
+    int seconds = elapsed % 60;
+
+    cout << setfill('0') << setw(2) << hours << ":"
+         << setfill('0') << setw(2) << minutes << ":"
+         << setfill('0') << setw(2) << seconds << endl;
 }
 
 int main() {
-    ofstream cout("test.out");
-    cout.close();
-    while (true) {
-        system("cls");
-        xuat();
-        Sleep(50);
-        if (GetAsyncKeyState(VK_SPACE) & 0x80000000) {
-            luu();
+    vector<time_t> timelapses;
+    time_t start_time = time(0);
+    int enter_count = 0;
+    const int max_enters = 5;
+    char input;
+
+    cout << "00:00:00" << endl;
+
+    try {
+        while (true) {
+            Sleep(50);
+            if (kbhit()) {
+                input = cin.get();
+                if (input == '\n') { // Enter key
+                    enter_count++;
+                    if (enter_count > max_enters) {
+                        throw MaxEnterException("Qua 5 lan");
+                    }
+                    system(CLEAR); // Clear the console screen
+                    time_t now = time(0);
+                    time_t elapsed = now - start_time;
+                    timelapses.push_back(elapsed); 
+                    cout << "Timelapse " << enter_count << ": ";
+                    print_time(elapsed);
+                } else if (input == ' ') { // Space key
+                    cout << "Dung dong ho." << endl;
+                    break;
+                }
+            }
+            else {
+                system(CLEAR); // Clear the console screen
+                time_t now = time(0);
+                time_t elapsed = now - start_time;
+                cout << "Timelapse " << enter_count << ": ";
+                print_time(elapsed);
+            }
         }
+    } catch (const MaxEnterException& e) {
+        cout << e.what() << endl;
     }
+
+    cout << "All timelapses:" << endl;
+    for (size_t i = 0; i < timelapses.size(); ++i) {
+        cout << "Timelapse " << i + 1 << ": ";
+        print_time(timelapses[i]);
+    }
+
     return 0;
 }
